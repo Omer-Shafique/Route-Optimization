@@ -1,0 +1,37 @@
+window.onload = function() {
+    const storedCSVData = localStorage.getItem('csvData');
+    if (storedCSVData) {
+        parseCSV(storedCSVData, 0);
+    }
+}
+
+
+async function optimizeRoute() {
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0];
+    if (!file) {
+        alert("Please select a file. File must be CSV");
+        return;
+    }
+    var reader = new FileReader();
+
+    reader.onload = async function (event) {
+        showLoadingSpinner();
+        var csvData = event.target.result;
+        localStorage.setItem('csvData', csvData); // Store CSV data in localStorage
+        try {
+            await parseCSV(csvData, 0); // Pass 0 as the starting city index
+        } catch (error) {
+            hideLoadingSpinner();
+            console.error('Error parsing CSV:', error);
+            alert('Error parsing CSV. Please check the console for details.');
+        }
+    };
+
+    reader.onerror = function (event) {
+        alert("Error reading the csv file.");
+        console.error('FileReader error:', event.target.error);
+    };
+
+    reader.readAsText(file);
+}

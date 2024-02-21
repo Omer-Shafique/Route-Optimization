@@ -1,0 +1,163 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.container {
+  width: 80%;
+  margin: 100px auto;
+}
+
+.upload-section, .starting-point-section {
+  margin-bottom: 20px;
+}
+
+.upload-section h2, .starting-point-section h2 {
+  margin-bottom: 10px;
+}
+
+.custom-file-upload {
+  cursor: pointer;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-file-upload:hover {
+  background-color: #45a049;
+}
+
+#fileInput {
+  display: none;
+}
+
+.file-name {
+  margin-top: 10px;
+}
+
+.optimize-btn {
+  cursor: pointer;
+  padding: 15px 40px;
+  font-size: 16px;
+  background-color: #1E90FF;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.optimize-btn:hover {
+  background-color: #4169E1;
+}
+
+.hidden {
+  display: none;
+}
+
+.loading-spinner {
+  display: none;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  color: black;
+}
+
+#map {
+  height: 400px;
+  width: 100%;
+}
+
+.custom-marker {
+  background-color: #007bff;
+  border-radius: 50%;
+  color: white;
+  text-align: center;
+  line-height: 30px; /* Should match the marker icon size */
+}
+
+.marker-label {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* .custom-marker-icon {
+  background-color: red; 
+  color: white; 
+  width: 30px; 
+  height:30px; 
+  border-radius: 50%;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  font-size: 14px; 
+}
+
+.custom-marker-wrapper {
+  position: relative;
+}
+
+.custom-marker {
+  position: absolute;
+  left: -15px;
+  top: -15px;
+} */
+
+
+#map .leaflet-routing-container {
+  display: none;
+}
+
+/* .leaflet-marker-icon{
+  display: none;
+} */
+
+
+/* CSS for marker label */
+
+
+.custom-marker-icon {
+  color: rgb(255, 255, 255); /* Set the color of the number */
+  text-align: center; /* Center the text horizontally */
+  padding: 1px; /* Adjust the padding around the marker icon */
+  padding-top: 4px;
+  padding-bottom: -10px; /* Negative padding-bottom might not have the desired effect */
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 100;
+  background-color: rgb(0, 87, 187);
+  border-radius: 50%;
+  line-height: 18px; /* Adjust the line height to center the text vertically */
+}
+
