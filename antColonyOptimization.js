@@ -467,34 +467,34 @@ function calculateProbabilities(pheromoneMatrix, coordinates, visited, currentCi
 }
 
 function displayOptimizedRoute(route, coordinates) {
-    // let optimizedRoutesHTML = "<h2>Optimized Route</h2><table id='optimizedRouteTable'><tr><th>Index</th><th>Latitude</th><th>Longitude</th><th>Location Name</th><th>Priority</th></tr>";
+    let optimizedRoutesHTML = "<h2>Optimized Route</h2><table id='optimizedRouteTable'><tr><th>Index</th><th>Latitude</th><th>Longitude</th><th>Location Name</th><th>Priority</th></tr>";
 
-    // // Store the prioritized coordinates
-    // const prioritizedCoordinates = [];
+    // Store the prioritized coordinates
+    const prioritizedCoordinates = [];
 
-    // for (let j = 0; j < route.length; j++) {
-    //     const index = route[j];
-    //     const coordinate = coordinates[index];
-    //     const priority = coordinate.priority ? 'Yes' : 'No'; // Check if the coordinate is prioritized
+    for (let j = 0; j < route.length; j++) {
+        const index = route[j];
+        const coordinate = coordinates[index];
+        const priority = coordinate.priority ? 'Yes' : 'No'; // Check if the coordinate is prioritized
 
-    //     // If priority is set to yes, add it to the prioritizedCoordinates array
-    //     if (coordinate.priority) {
-    //         prioritizedCoordinates.push({ index: j, coordinate: coordinate });
-    //     } else {
-    //         optimizedRoutesHTML += `<tr><td>${j + 1}</td><td>${coordinate.lat}</td><td>${coordinate.lng}</td><td>${coordinate.name}</td><td>${priority}</td></tr>`;
-    //     }
-    // }
+        // If priority is set to yes, add it to the prioritizedCoordinates array
+        if (coordinate.priority) {
+            prioritizedCoordinates.push({ index: j, coordinate: coordinate });
+        } else {
+            optimizedRoutesHTML += `<tr><td>${j + 1}</td><td>${coordinate.lat}</td><td>${coordinate.lng}</td><td>${coordinate.name}</td><td>${priority}</td></tr>`;
+        }
+    }
 
-    // // Add prioritized coordinates after the starting point
-    // for (const prioritizedCoordinate of prioritizedCoordinates) {
-    //     optimizedRoutesHTML = optimizedRoutesHTML.replace('</tr>', `<tr><td>${prioritizedCoordinate.index + 1}</td><td>${prioritizedCoordinate.coordinate.lat}</td><td>${prioritizedCoordinate.coordinate.lng}</td><td>${prioritizedCoordinate.coordinate.name}</td><td>Yes</td></tr></tr>`);
-    // }
+    // Add prioritized coordinates after the starting point
+    for (const prioritizedCoordinate of prioritizedCoordinates) {
+        optimizedRoutesHTML = optimizedRoutesHTML.replace('</tr>', `<tr><td>${prioritizedCoordinate.index + 1}</td><td>${prioritizedCoordinate.coordinate.lat}</td><td>${prioritizedCoordinate.coordinate.lng}</td><td>${prioritizedCoordinate.coordinate.name}</td><td>Yes</td></tr></tr>`);
+    }
 
-    // optimizedRoutesHTML += "</table>";
+    optimizedRoutesHTML += "</table>";
 
-    // const optimizedRoutesDiv = document.getElementById('optimizedRoutes');
-    // optimizedRoutesDiv.innerHTML = optimizedRoutesHTML;
-    // optimizedRoutesDiv.classList.remove('hidden');
+    const optimizedRoutesDiv = document.getElementById('optimizedRoutes');
+    optimizedRoutesDiv.innerHTML = optimizedRoutesHTML;
+    optimizedRoutesDiv.classList.remove('hidden');
 }
 
 
