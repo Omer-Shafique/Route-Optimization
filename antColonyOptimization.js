@@ -66,7 +66,7 @@ function getPrioritizedPoints(coordinates) {
     return prioritizedPoints;
 }
 
-async function parseCSV(csvData, startCityIndex) {
+async function parseCSV(csvData) {
     try {
         var lines = csvData.split('\n');
         var coordinates = [];
@@ -92,7 +92,7 @@ async function parseCSV(csvData, startCityIndex) {
                     continue;
                 }
 
-                coordinates.push({ lat: latitude, lng: longitude, name: locationName, priority: isPriority });
+                coordinates.push({ lat: latitude, lng: longitude, name: locationName, priority: isPriority, rowIndex: i });
 
                 if (isPriority) {
                     prioritizedPoints.push(coordinates.length - 1); // Index of the prioritized point
@@ -104,6 +104,11 @@ async function parseCSV(csvData, startCityIndex) {
             console.error("No valid coordinates found in the CSV data.");
             return;
         }
+
+        // Sort coordinates array such that the starting point is at the beginning
+        coordinates.sort((a, b) => {
+            return a.rowIndex - b.rowIndex;
+        });
 
         // Once coordinates are extracted, continue with route optimization
         calculateAndOptimizeRoute(coordinates, prioritizedPoints);
@@ -203,7 +208,6 @@ async function optimizeRouteWithACO(coordinates, distanceMatrix, prioritizedRout
 
     addMarkersToMap(coordinates, bestRoute, prioritizedRoute);
 }
-
 
 function constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, startCityIndex, prioritizedPoints) {
     const numCities = coordinates.length;
@@ -445,27 +449,31 @@ function calculateProbabilities(pheromoneMatrix, coordinates, visited, currentCi
 }
 
 function displayOptimizedRoute(route, coordinates) {
-    let optimizedRoutesHTML = "<h2>Optimized Route</h2><table id='optimizedRouteTable'><tr><th>Index</th><th>Latitude</th><th>Longitude</th><th>Location Name</th><th>Priority</th></tr>";
+    let optimizedRoutesHTML = "<h2>Optimized Route</h2><table id='optimizedRouteTable'><tr><th>Index</th><th>Latitude</th><th>Longitude</th><th>Location Name</th></tr>";
 
-    // Store the prioritized coordinates
-    const prioritizedCoordinates = [];
+    // Find the starting point index
+    const startingPointIndex = route[0];
 
-    for (let j = 0; j < route.length; j++) {
-        const index = route[j];
-        const coordinate = coordinates[index];
-        const priority = coordinate.priority ? 'Yes' : 'No'; // Check if the coordinate is prioritized
+    // Sort the route array based on priority, excluding the starting point
+    const sortedRoute = route.slice(1).sort((a, b) => {
+        const coordA = coordinates[a];
+        const coordB = coordinates[b];
 
-        // If priority is set to yes, add it to the prioritizedCoordinates array
-        if (coordinate.priority) {
-            prioritizedCoordinates.push({ index: j, coordinate: coordinate });
+        if (coordA.prioritized && !coordB.prioritized) {
+            return -1;
+        } else if (!coordA.prioritized && coordB.prioritized) {
+            return 1;
         } else {
-            optimizedRoutesHTML += `<tr><td>${j + 1}</td><td>${coordinate.lat}</td><td>${coordinate.lng}</td><td>${coordinate.name}</td><td>${priority}</td></tr>`;
+            return 0;
         }
-    }
+    });
 
-    // Add prioritized coordinates after the starting point
-    for (const prioritizedCoordinate of prioritizedCoordinates) {
-        optimizedRoutesHTML = optimizedRoutesHTML.replace('</tr>', `<tr><td>${prioritizedCoordinate.index + 1}</td><td>${prioritizedCoordinate.coordinate.lat}</td><td>${prioritizedCoordinate.coordinate.lng}</td><td>${prioritizedCoordinate.coordinate.name}</td><td>Yes</td></tr></tr>`);
+    // Add the starting point at the beginning of the sorted array
+    sortedRoute.unshift(startingPointIndex);
+
+    for (let j = 0; j < sortedRoute.length; j++) {
+        const index = sortedRoute[j];
+        optimizedRoutesHTML += `<tr><td>${j + 1}</td><td>${coordinates[index].lat}</td><td>${coordinates[index].lng}</td><td>${coordinates[index].name}</td></tr>`;
     }
 
     optimizedRoutesHTML += "</table>";
@@ -474,11 +482,6 @@ function displayOptimizedRoute(route, coordinates) {
     optimizedRoutesDiv.innerHTML = optimizedRoutesHTML;
     optimizedRoutesDiv.classList.remove('hidden');
 }
-
-
-
-
-
 
 function addMarkersToMap(coordinates, route, prioritizedPoints) {
     var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10);
@@ -530,7 +533,7 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
         waypoints: prioritizedRouteLatLng,
         routeWhileDragging: true,
         lineOptions: {
-            styles: [{ color: '#910200', opacity: 1, weight: 8 }]
+            styles: [{ color: '#F42E17', opacity: 1, weight: 8 }]
         }
     }).addTo(map);
 
