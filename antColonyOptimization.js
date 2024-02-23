@@ -1,3 +1,38 @@
+class PriorityQueue {
+    constructor() {
+        this.queue = [];
+    }
+
+    enqueue(item) {
+        this.queue.push(item);
+        this.queue.sort((a, b) => a.priority - b.priority); // Sort by priority
+    }
+
+    dequeue() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.queue.shift();
+    }
+
+    isEmpty() {
+        return this.queue.length === 0;
+    }
+}
+
+
+
+function optimizePointOrder(points, distanceMatrix, startingPoint) {
+    // Sort points based on their distance from the starting point
+    points.sort((a, b) => {
+        const distanceA = distanceMatrix[startingPoint][a];
+        const distanceB = distanceMatrix[startingPoint][b];
+        return distanceA - distanceB;
+    });
+
+    return points;
+}
+
 window.onload = function() {
     const storedCSVData = localStorage.getItem('csvData');
     if (storedCSVData) {
@@ -5,8 +40,6 @@ window.onload = function() {
     }
 }
 
-
-// Function to display the list of points with checkboxes
 function displayPointList(coordinates) {
     const pointListDiv = document.getElementById('pointList');
     let listHTML = '<h3>Select Prioritized Points</h3>';
@@ -32,7 +65,6 @@ function getPrioritizedPoints(coordinates) {
 
     return prioritizedPoints;
 }
-
 
 async function parseCSV(csvData, startCityIndex) {
     try {
@@ -80,7 +112,6 @@ async function parseCSV(csvData, startCityIndex) {
         alert('Error parsing CSV. Please contact the developer');
     }
 }
-
 
 function showLoadingSpinner() {
     const loadingSpinner = document.getElementById('loadingSpinner');
@@ -136,7 +167,7 @@ async function getLocationName(latitude, longitude) {
     }
 }
 
-async function optimizeRouteWithACO(coordinates, distanceMatrix, prioritizedPoints) {
+async function optimizeRouteWithACO(coordinates, distanceMatrix, prioritizedRoute, lastPriorityIndex) {
     const numCities = coordinates.length;
     const numAnts = 10;
     const maxIterations = 100;
@@ -154,7 +185,7 @@ async function optimizeRouteWithACO(coordinates, distanceMatrix, prioritizedPoin
         const ants = initializeAnts(numAnts, numCities);
 
         for (let ant = 0; ant < numAnts; ant++) {
-            ants[ant].path = constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, 0, prioritizedPoints);
+            ants[ant].path = constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, lastPriorityIndex, prioritizedRoute);
             ants[ant].distance = calculateRouteDistance(ants[ant].path, distanceMatrix);
 
             if (ants[ant].distance < bestDistance) {
@@ -163,16 +194,15 @@ async function optimizeRouteWithACO(coordinates, distanceMatrix, prioritizedPoin
             }
         }
 
-        updatePheromones(pheromoneMatrix, ants, evaporationRate, distanceMatrix, prioritizedPoints);
+        updatePheromones(pheromoneMatrix, ants, evaporationRate, distanceMatrix, prioritizedRoute);
     }
 
     hideLoadingSpinner();
 
     displayOptimizedRoute(bestRoute, coordinates);
 
-    addMarkersToMap(coordinates, bestRoute, prioritizedPoints);
+    addMarkersToMap(coordinates, bestRoute, prioritizedRoute);
 }
-
 
 
 function constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, startCityIndex, prioritizedPoints) {
@@ -201,78 +231,31 @@ function constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, startCityI
     return route;
 }
 
-
 async function optimizeRouteWithPriorities(coordinates) {
+    // Calculate distance matrix
     const distanceMatrix = calculateDistanceMatrix(coordinates);
+
+    // Extract prioritized points
     const prioritizedPoints = extractPrioritizedPoints(coordinates);
 
-    // Calculate the distances between the starting point and priority locations
-    const startDistances = [];
-    for (const point of prioritizedPoints) {
-        startDistances.push(distanceMatrix[0][point]);
+    // Check if there are prioritized points
+    if (prioritizedPoints.length === 0) {
+        console.error("No prioritized points found.");
+        return;
     }
 
-    // Find the nearest priority location to the starting point
-    const nearestPriorityIndex = startDistances.indexOf(Math.min(...startDistances));
+    // Sort prioritized points by index
+    prioritizedPoints.sort((a, b) => a - b);
 
-    // Create a route with the starting point and the nearest priority location
-    const initialRoute = [0, ...prioritizedPoints.slice(nearestPriorityIndex, nearestPriorityIndex + 1)];
+    // Determine the last priority location
+    const lastPriorityIndex = prioritizedPoints[prioritizedPoints.length - 1];
 
-    // Calculate the distances between the nearest priority location and the remaining priority locations
-    const remainingDistances = [];
-    for (let i = 1; i < prioritizedPoints.length; i++) {
-        if (i !== nearestPriorityIndex) {
-            remainingDistances.push(distanceMatrix[prioritizedPoints[nearestPriorityIndex]][prioritizedPoints[i]]);
-        }
-    }
+    // Construct initial route starting from the beginning for the prioritized route
+    const initialPrioritizedRoute = [0, ...prioritizedPoints.filter(point => point !== 0)];
 
-    // Find the nearest priority location to the nearest priority location
-    const nearestRemainingIndex = remainingDistances.indexOf(Math.min(...remainingDistances));
-
-    // Add the nearest priority location to the route
-    initialRoute.push(prioritizedPoints[nearestRemainingIndex + 1]);
-
-    // Calculate the distances between the nearest remaining priority location and the standard locations
-    const standardDistances = [];
-    for (let i = 0; i < coordinates.length; i++) {
-        if (!prioritizedPoints.includes(i)) {
-            standardDistances.push(distanceMatrix[prioritizedPoints[nearestRemainingIndex + 1]][i]);
-        }
-    }
-
-    // Find the nearest standard location to the nearest remaining priority location
-    const nearestStandardIndex = standardDistances.indexOf(Math.min(...standardDistances));
-
-    // Add the nearest standard location to the route
-    initialRoute.push(nearestStandardIndex);
-
-    // Calculate the distances between the nearest standard location and the remaining priority locations
-    const finalDistances = [];
-    for (let i = 0; i < prioritizedPoints.length; i++) {
-        if (!initialRoute.includes(prioritizedPoints[i])) {
-            finalDistances.push(distanceMatrix[nearestStandardIndex][prioritizedPoints[i]]);
-        }
-    }
-
-    // Find the nearest priority location to the nearest standard location
-    const nearestFinalIndex = finalDistances.indexOf(Math.min(...finalDistances));
-
-    // Add the remaining priority locations to the route in order
-    for (let i = 0; i < prioritizedPoints.length; i++) {
-        if (i !== nearestFinalIndex && !initialRoute.includes(prioritizedPoints[i])) {
-            initialRoute.push(prioritizedPoints[i]);
-        }
-    }
-
-    // Add the starting point to the end of the route to close the loop
-    initialRoute.push(0);
-
-    optimizeRouteWithACO(coordinates, distanceMatrix, initialRoute);
+    // Optimize route using ACO with the initial route starting from the last priority location
+    optimizeRouteWithACO(coordinates, distanceMatrix, initialPrioritizedRoute, lastPriorityIndex);
 }
-
-
-
-
 
 
 
@@ -282,7 +265,6 @@ async function calculateAndOptimizeRoute(coordinates) {
     const prioritizedPoints = extractPrioritizedPoints(coordinates);
     optimizeRouteWithPriorities(coordinates, distanceMatrix, prioritizedPoints);
 }
-
 
 function initializeAnts(numAnts, numCities) {
     const ants = new Array(numAnts).fill(null).map(() => ({
@@ -332,8 +314,6 @@ function constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, startCityI
 
     return route;
 }
-
-
 
   function calculateRouteDistance(route, distanceMatrix) {
     let distance = 0;
@@ -442,8 +422,6 @@ function calculateProbabilities(pheromoneMatrix, coordinates, visited, currentCi
 
     return probabilities;
 }
-
-
 
 
 
