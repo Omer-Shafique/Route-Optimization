@@ -78,25 +78,15 @@ function getPrioritizedPoints(coordinates) {
     return prioritizedPoints;
 }
 
+
 async function parseCSV(csvData) {
     try {
         var lines = csvData.split('\n');
         var coordinates = [];
         var prioritizedPoints = [];
 
-        // Process the first line separately as the starting point
-        var firstLineParts = lines[0].trim().split(',');
-        var firstPoint = {
-            lat: parseFloat(firstLineParts[0]), // Latitude from column 1
-            lng: parseFloat(firstLineParts[1]), // Longitude from column 2
-            name: firstLineParts[2], // Location name from column 3
-            priority: true, // First point is always prioritized
-            rowIndex: 0
-        };
-        coordinates.push(firstPoint);
-        prioritizedPoints.push(0); // Index of the prioritized point
-
-        for (var i = 1; i < lines.length; i++) {
+        // Process each line of the CSV
+        for (var i = 0; i < lines.length; i++) {
             var line = lines[i].trim();
 
             if (line !== '') {
@@ -106,6 +96,7 @@ async function parseCSV(csvData) {
                     console.error("Invalid CSV format:", line);
                     continue;
                 }
+
                 var latitude = parseFloat(parts[0]); // Latitude from column 1
                 var longitude = parseFloat(parts[1]); // Longitude from column 2
                 var locationName = parts[2]; // Location name from column 3
@@ -116,9 +107,12 @@ async function parseCSV(csvData) {
                     continue;
                 }
 
-                coordinates.push({ lat: latitude, lng: longitude, name: locationName, priority: isPriority, rowIndex: i });
+                // Mark the first row as the starting point
+                var priority = i === 0 ? true : isPriority;
 
-                if (isPriority) {
+                coordinates.push({ lat: latitude, lng: longitude, name: locationName, priority: priority, rowIndex: i });
+
+                if (priority) {
                     prioritizedPoints.push(coordinates.length - 1); // Index of the prioritized point
                 }
             }
@@ -129,11 +123,6 @@ async function parseCSV(csvData) {
             return;
         }
 
-        // Sort coordinates array such that the starting point is at the beginning
-        coordinates.sort((a, b) => {
-            return a.rowIndex - b.rowIndex;
-        });
-
         // Once coordinates are extracted, continue with route optimization
         calculateAndOptimizeRoute(coordinates, prioritizedPoints);
     } catch (error) {
@@ -141,6 +130,8 @@ async function parseCSV(csvData) {
         alert('Error parsing CSV. Please contact the developer');
     }
 }
+
+    
 
 
 
@@ -228,12 +219,22 @@ async function optimizeRouteWithACO(coordinates, distanceMatrix, prioritizedRout
         updatePheromones(pheromoneMatrix, ants, evaporationRate, distanceMatrix, prioritizedRoute);
     }
 
+    // Find the index of the starting point in the optimized route
+    const startingPointIndex = bestRoute.indexOf(0);
+
+    // Rearrange the optimized route so that it ends on the starting point
+    const optimizedRouteEndingOnStartingPoint = [
+        ...bestRoute.slice(startingPointIndex), // From starting point to end
+        ...bestRoute.slice(0, startingPointIndex + 1).reverse() // From beginning to starting point (reversed)
+    ];
+
     hideLoadingSpinner();
 
-    displayOptimizedRoute(bestRoute, coordinates);
+    displayOptimizedRoute(optimizedRouteEndingOnStartingPoint, coordinates);
 
-    addMarkersToMap(coordinates, bestRoute, prioritizedRoute);
+    addMarkersToMap(coordinates, optimizedRouteEndingOnStartingPoint, prioritizedRoute);
 }
+
 
 function constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, startCityIndex, prioritizedPoints) {
     const numCities = coordinates.length;
@@ -508,84 +509,12 @@ function displayOptimizedRoute(route, coordinates) {
         const index = sortedRoute[j];
         optimizedRoutesHTML += `<tr><td>${j + 1}</td><td>${coordinates[index].lat}</td><td>${coordinates[index].lng}</td><td>${coordinates[index].name}</td></tr>`;
     }
-
+    
     optimizedRoutesHTML += "</table>";
 
     const optimizedRoutesDiv = document.getElementById('optimizedRoutes');
     optimizedRoutesDiv.innerHTML = optimizedRoutesHTML;
     optimizedRoutesDiv.classList.remove('hidden');
-}
-
-function addMarkersToMap(coordinates, route, prioritizedPoints) {
-    var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    var prioritizedMarkers = [];
-    var routeMarkers = [];
-    var routeLatLng = [];
-    var prioritizedRouteLatLng = [];
-    var markerCount = 1;
-
-    for (var i = 0; i < route.length; i++) {
-        var index = route[i];
-        var latLng = L.latLng(coordinates[index].lat, coordinates[index].lng);
-
-        // Check if the current point is a prioritized point
-        if (prioritizedPoints.includes(index)) {
-            var markerIcon = L.divIcon({
-                className: 'custom-marker-icon',
-                html: markerCount.toString(),
-                iconSize: [25, 25],
-                iconAnchor: [-2, 12],
-                iconUrl: 'red_marker.png'
-            });
-            var marker = L.marker(latLng, { icon: markerIcon });
-            prioritizedMarkers.push(marker);
-            prioritizedRouteLatLng.push(latLng);
-        } else {
-            var markerIcon = L.divIcon({
-                className: 'custom-marker-icon',
-                html: markerCount.toString(),
-                iconSize: [25, 25],
-                iconAnchor: [-2, 12],
-                iconUrl: 'blue_marker.png'
-            });
-            var marker = L.marker(latLng, { icon: markerIcon });
-            routeMarkers.push(marker); // Store non-prioritized points for blue route
-            routeLatLng.push(latLng);
-        }
-
-        markerCount++;
-    }
-
-    // Add all markers to the map
-    for (var i = 0; i < prioritizedMarkers.length; i++) {
-        prioritizedMarkers[i].addTo(map);
-    }
-
-    for (var i = 0; i < routeMarkers.length; i++) {
-        routeMarkers[i].addTo(map);
-    }
-
-    // Add routing controls for both types of points
-    var prioritizedRouteControl = L.Routing.control({
-        waypoints: prioritizedRouteLatLng,
-        routeWhileDragging: true,
-        lineOptions: {
-            styles: [{ color: '#F42E17', opacity: 1, weight: 5 }]
-        }
-    }).addTo(map);
-
-    var routeControl = L.Routing.control({
-        waypoints: routeLatLng,
-        routeWhileDragging: true,
-        lineOptions: {
-            styles: [{ color: '#008ee6', opacity: 1, weight: 5 }]
-        }
-    }).addTo(map);
 }
 
 // function addMarkersToMap(coordinates, route, prioritizedPoints) {
@@ -595,20 +524,51 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
 //         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 //     }).addTo(map);
 
+//     var prioritizedMarkers = [];
+//     var routeMarkers = [];
 //     var routeLatLng = [];
 //     var prioritizedRouteLatLng = [];
+//     var markerCount = 1;
 
-//     // Loop through the route to add markers
 //     for (var i = 0; i < route.length; i++) {
 //         var index = route[i];
 //         var latLng = L.latLng(coordinates[index].lat, coordinates[index].lng);
 
 //         // Check if the current point is a prioritized point
 //         if (prioritizedPoints.includes(index)) {
+//             var markerIcon = L.divIcon({
+//                 className: 'custom-marker-icon',
+//                 html: markerCount.toString(),
+//                 iconSize: [25, 25],
+//                 iconAnchor: [-2, 12],
+//                 iconUrl: 'red_marker.png'
+//             });
+//             var marker = L.marker(latLng, { icon: markerIcon });
+//             prioritizedMarkers.push(marker);
 //             prioritizedRouteLatLng.push(latLng);
 //         } else {
+//             var markerIcon = L.divIcon({
+//                 className: 'custom-marker-icon',
+//                 html: markerCount.toString(),
+//                 iconSize: [25, 25],
+//                 iconAnchor: [-2, 12],
+//                 iconUrl: 'blue_marker.png'
+//             });
+//             var marker = L.marker(latLng, { icon: markerIcon });
+//             routeMarkers.push(marker); // Store non-prioritized points for blue route
 //             routeLatLng.push(latLng);
 //         }
+
+//         markerCount++;
+//     }
+
+//     // Add all markers to the map
+//     for (var i = 0; i < prioritizedMarkers.length; i++) {
+//         prioritizedMarkers[i].addTo(map);
+//     }
+
+//     for (var i = 0; i < routeMarkers.length; i++) {
+//         routeMarkers[i].addTo(map);
 //     }
 
 //     // Add routing controls for both types of points
@@ -616,7 +576,7 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
 //         waypoints: prioritizedRouteLatLng,
 //         routeWhileDragging: true,
 //         lineOptions: {
-//             styles: [{ color: '#F42E17', opacity: 1, weight: 8 }]
+//             styles: [{ color: '#F42E17', opacity: 1, weight: 5 }]
 //         }
 //     }).addTo(map);
 
@@ -629,9 +589,94 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
 //     }).addTo(map);
 // }
 
+function addMarkersToMap(coordinates, route, prioritizedPoints) {
+    var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10);
 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
+    var routeLatLng = [];
+    var prioritizedRouteLatLng = [];
 
+    // Loop through the route to add markers
+    for (var i = 0; i < route.length; i++) {
+        var index = route[i];
+        var latLng = L.latLng(coordinates[index].lat, coordinates[index].lng);
 
+        // Check if the current point is a prioritized point
+        if (prioritizedPoints.includes(index)) {
+            prioritizedRouteLatLng.push(latLng);
+        } else {
+            routeLatLng.push(latLng);
+        }
+    }
+
+    // Create custom icon for the starting point of the red route
+    var startPointRedIcon = L.divIcon({
+        className: 'custom-marker-icon',
+        html: '<span style="color: black; font-weight: bold; font-size:20px">Start</span>', // Change the color to black and make it bold
+        iconSize: [25, 25],
+        iconAnchor: [-2, 12],
+        iconUrl: 'start_red_marker.png' // You can specify the URL of your custom marker icon for the red route start
+    });
+
+    // Create custom icon for the ending point of the red route
+    var endPointRedIcon = L.divIcon({
+        className: 'custom-marker-icon',
+        html: '<span style="color: black; font-weight: bold; font-size:20px"></span>', // Change the color to black and make it bold
+        iconSize: [25, 25],
+        iconAnchor: [-2, 12],
+        iconUrl: 'end_red_marker.png' // You can specify the URL of your custom marker icon for the red route end
+    });
+
+    // Create custom icon for the starting point of the blue route
+    var startPointBlueIcon = L.divIcon({
+        className: 'custom-marker-icon',
+        html: '<span style="color: black; font-weight: bold; font-size:20px">End</span>', // Change the color to black and make it bold
+        iconSize: [25, 25],
+        iconAnchor: [-2, 12],
+        iconUrl: 'start_blue_marker.png' // You can specify the URL of your custom marker icon for the blue route start
+    });
+
+    // Create custom icon for the ending point of the blue route
+    var endPointBlueIcon = L.divIcon({
+        className: 'custom-marker-icon',
+        html: '<span style="color: black; font-weight: bold; font-size:20px"></span>', // Change the color to black and make it bold
+        iconSize: [25, 25],
+        iconAnchor: [-2, 12],
+        iconUrl: 'end_blue_marker.png' // You can specify the URL of your custom marker icon for the blue route end
+    });
+
+    // Add marker for the starting point of the red route
+    L.marker(prioritizedRouteLatLng[0], { icon: startPointRedIcon }).addTo(map);
+
+    // Add marker for the ending point of the red route
+    L.marker(prioritizedRouteLatLng[prioritizedRouteLatLng.length - 1], { icon: endPointRedIcon }).addTo(map);
+
+    // Add marker for the starting point of the blue route
+    L.marker(routeLatLng[0], { icon: startPointBlueIcon }).addTo(map);
+
+    // Add marker for the ending point of the blue route
+    L.marker(routeLatLng[routeLatLng.length - 1], { icon: endPointBlueIcon }).addTo(map);
+
+    // Add routing controls for the red route
+    var prioritizedRouteControl = L.Routing.control({
+        waypoints: prioritizedRouteLatLng,
+        routeWhileDragging: true,
+        lineOptions: {
+            styles: [{ color: '#F42E17', opacity: 1, weight: 7 }]
+        }
+    }).addTo(map);
+
+    // Add routing controls for the blue route
+    var routeControl = L.Routing.control({
+        waypoints: routeLatLng,
+        routeWhileDragging: true,
+        lineOptions: {
+            styles: [{ color: '#008ee6', opacity: 1, weight: 5 }]
+        }
+    }).addTo(map);
+}
 
 
