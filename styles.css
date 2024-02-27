@@ -7,8 +7,10 @@ body {
 }
 
 .container {
-  width: 130%;
-  margin: 10% 2% auto;
+  /* width: 90%;
+  margin: 5% 5% auto; */
+  padding-right:10%;
+  padding-left:10px;
 
 }
 
@@ -100,11 +102,9 @@ th {
 }
 
 #map {
-  display: flex;
   height: 200px;
   width: 100%;
-  align-items: center;
-  justify-content: center;
+
 }
 
 .custom-marker {

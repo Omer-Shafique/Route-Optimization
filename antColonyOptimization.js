@@ -646,12 +646,20 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
 
 
 // Function to reverse the route and update the Leaflet routing control
+var routeSequence = 1; // Initialize route sequence outside the function
+
 function reverseRouteAndSetWaypoints(routeControl, routeLatLng) {
     // Reverse the order of the routeLatLng array
     routeLatLng.reverse();
 
     // Update the Leaflet routing control with the new routeLatLng array
     routeControl.setWaypoints(routeLatLng);
+
+    // Add markers with sequence numbers to the reversed route
+    for (var i = 0; i < routeLatLng.length; i++) {
+        var latLng = routeLatLng[i];
+        L.marker(latLng, { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text">' + routeSequence++ + '</div>'})}).addTo(routeControl._map);
+    }
 }
 
 
