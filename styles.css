@@ -7,15 +7,18 @@ body {
 }
 
 .container {
-  width: 80%;
-  margin: 100px auto;
+  width: 130%;
+  margin: 10% 2% auto;
+
 }
 
-.upload-section, .starting-point-section {
+.upload-section,
+.starting-point-section {
   margin-bottom: 20px;
 }
 
-.upload-section h2, .starting-point-section h2 {
+.upload-section h2,
+.starting-point-section h2 {
   margin-bottom: 10px;
 }
 
@@ -84,7 +87,9 @@ table {
   border-collapse: collapse;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -95,69 +100,72 @@ th {
 }
 
 #map {
-  height: 400px;
+  display: flex;
+  height: 200px;
   width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
 .custom-marker {
   background-color: #007bff;
   border-radius: 50%;
-  color: white;
+  color: rgb(0, 0, 0);
   text-align: center;
   line-height: 30px; /* Should match the marker icon size */
 }
-
-.marker-label {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-/* .custom-marker-icon {
-  background-color: red; 
-  color: white; 
-  width: 30px; 
-  height:30px; 
-  border-radius: 50%;
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  font-size: 14px; 
-}
-
-.custom-marker-wrapper {
-  position: relative;
-}
-
-.custom-marker {
-  position: absolute;
-  left: -15px;
-  top: -15px;
-} */
-
 
 #map .leaflet-routing-container {
   display: none;
 }
 
-/* .leaflet-marker-icon{
-  display: none;
-} */
-
-
-/* CSS for marker label */
-
-
-.custom-marker-icon {
-  color: rgb(255, 255, 255); /* Set the color of the number */
-  text-align: center; /* Center the text horizontally */
-  padding: 1px; /* Adjust the padding around the marker icon */
-  padding-top: 4px;
-  padding-bottom: -10px; /* Negative padding-bottom might not have the desired effect */
-  font-size: 11px;
-  font-weight: bold;
-  z-index: 100;
-  background-color: rgb(0, 87, 187);
-  border-radius: 50%;
-  line-height: 18px; /* Adjust the line height to center the text vertically */
+.starting-marker {
+  width: 25px;
+  height: 25px;
+  background-color: #ffffff; /* White background */
+  border: 2px solid #000000; /* Black border */
+  border-radius: 50%; /* Circular shape */
 }
 
+/* .custom-marker-icon {
+  background-color: #ffffff; 
+  border: 2px solid #000000; 
+  border-radius: 50%; 
+  text-align: center;
+} */
+
+.marker-order {
+  display: block;
+  font-size: 14px; /* Font size of the marker order */
+  font-weight: bold;
+  color: #000000; /* Marker order text color */
+  line-height: 30px; /* Vertical alignment of the order number */
+}
+
+.custom-marker-icon {
+  border: 2px solid black; 
+  background-color: #fff;
+  padding-left: 100px !important; 
+  color: #000000;
+}
+
+.custom-div-icon {
+  color: black;
+}
+
+.marker-text {
+  color: rgb(255, 255, 255);
+  font-weight: bolder;
+  white-space: nowrap;
+  background-color: rgb(0, 0, 0);
+  padding-right: 120px;
+  padding-left: 20px;
+  border-radius: 10px;
+
+}
+
+
+.blue-route-labels{
+  color:#000000;
+  background-color: rgb(255, 0, 55);
+}

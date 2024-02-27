@@ -590,7 +590,7 @@ function displayOptimizedRoute(route, coordinates) {
 // }
 
 function addMarkersToMap(coordinates, route, prioritizedPoints) {
-    var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10);
+    var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10); 
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -612,53 +612,13 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
         }
     }
 
-    // Create custom icon for the starting point of the red route
-    var startPointRedIcon = L.divIcon({
-        className: 'custom-marker-icon',
-        html: '<span style="color: black; font-weight: bold; font-size:20px">Start</span>', // Change the color to black and make it bold
-        iconSize: [25, 25],
-        iconAnchor: [-2, 12],
-        iconUrl: 'start_red_marker.png' // You can specify the URL of your custom marker icon for the red route start
-    });
+    // Add text directly to the map for the starting and ending points of the red route
+    L.marker(prioritizedRouteLatLng[0], { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text blue-route-labels">Priority Route Start</div>'})}).addTo(map);
+    L.marker(prioritizedRouteLatLng[prioritizedRouteLatLng.length - 1], { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text blue-route-labels">Priority Route End</div>'})}).addTo(map);
 
-    // Create custom icon for the ending point of the red route
-    var endPointRedIcon = L.divIcon({
-        className: 'custom-marker-icon',
-        html: '<span style="color: black; font-weight: bold; font-size:20px"></span>', // Change the color to black and make it bold
-        iconSize: [25, 25],
-        iconAnchor: [-2, 12],
-        iconUrl: 'end_red_marker.png' // You can specify the URL of your custom marker icon for the red route end
-    });
-
-    // Create custom icon for the starting point of the blue route
-    var startPointBlueIcon = L.divIcon({
-        className: 'custom-marker-icon',
-        html: '<span style="color: black; font-weight: bold; font-size:20px">End</span>', // Change the color to black and make it bold
-        iconSize: [25, 25],
-        iconAnchor: [-2, 12],
-        iconUrl: 'start_blue_marker.png' // You can specify the URL of your custom marker icon for the blue route start
-    });
-
-    // Create custom icon for the ending point of the blue route
-    var endPointBlueIcon = L.divIcon({
-        className: 'custom-marker-icon',
-        html: '<span style="color: black; font-weight: bold; font-size:20px"></span>', // Change the color to black and make it bold
-        iconSize: [25, 25],
-        iconAnchor: [-2, 12],
-        iconUrl: 'end_blue_marker.png' // You can specify the URL of your custom marker icon for the blue route end
-    });
-
-    // Add marker for the starting point of the red route
-    L.marker(prioritizedRouteLatLng[0], { icon: startPointRedIcon }).addTo(map);
-
-    // Add marker for the ending point of the red route
-    L.marker(prioritizedRouteLatLng[prioritizedRouteLatLng.length - 1], { icon: endPointRedIcon }).addTo(map);
-
-    // Add marker for the starting point of the blue route
-    L.marker(routeLatLng[0], { icon: startPointBlueIcon }).addTo(map);
-
-    // Add marker for the ending point of the blue route
-    L.marker(routeLatLng[routeLatLng.length - 1], { icon: endPointBlueIcon }).addTo(map);
+    // Add text directly to the map for the starting and ending points of the blue route
+    L.marker(routeLatLng[0], { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text ">Casual Route End</div>'})}).addTo(map);
+    L.marker(routeLatLng[routeLatLng.length - 1], { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text ">Casual Route Start</div>'})}).addTo(map);
 
     // Add routing controls for the red route
     var prioritizedRouteControl = L.Routing.control({
@@ -671,12 +631,22 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
 
     // Add routing controls for the blue route
     var routeControl = L.Routing.control({
-        waypoints: routeLatLng,
+        waypoints: routeLatLng, // Use routeLatLng for the blue route
         routeWhileDragging: true,
         lineOptions: {
             styles: [{ color: '#008ee6', opacity: 1, weight: 5 }]
         }
     }).addTo(map);
+
+    // Reverse the route and update the map
+    reverseRouteAndSetWaypoints(routeControl, routeLatLng);
 }
 
+// Function to reverse the route and update the Leaflet routing control
+function reverseRouteAndSetWaypoints(routeControl, routeLatLng) {
+    // Reverse the order of the routeLatLng array
+    routeLatLng.reverse();
 
+    // Update the Leaflet routing control with the new routeLatLng array
+    routeControl.setWaypoints(routeLatLng);
+}
