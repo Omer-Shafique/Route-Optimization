@@ -115,8 +115,12 @@ th {
   line-height: 30px; /* Should match the marker icon size */
 }
 
-#map .leaflet-routing-container {
+#map .leaflet-routing-container { 
   display: none;
+  background-color: black;
+  color: white;
+  padding-left:3px;
+
 }
 
 .starting-marker {
@@ -154,12 +158,12 @@ th {
 }
 
 .marker-text {
-  color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
   font-weight: bolder;
   white-space: nowrap;
-  background-color: rgb(0, 0, 0);
-  padding-right: 120px;
-  padding-left: 20px;
+  background-color: rgb(0, 140, 255);
+  padding-right: 20px;
+  padding-left: 15px;
   border-radius: 10px;
 
 }
@@ -167,5 +171,7 @@ th {
 
 .blue-route-labels{
   color:#000000;
-  background-color: rgb(255, 0, 55);
+  background-color: rgb(223, 0, 0);
+  padding-right: 20px;
+  padding-left: 10px;
 }

@@ -590,7 +590,7 @@ function displayOptimizedRoute(route, coordinates) {
 // }
 
 function addMarkersToMap(coordinates, route, prioritizedPoints) {
-    var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10); 
+    var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -598,6 +598,11 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
 
     var routeLatLng = [];
     var prioritizedRouteLatLng = [];
+    var routeSequence = 1;
+    var prioritizedRouteSequence = 1;
+
+    // Initialize the sequence for the prioritized route
+    prioritizedRouteSequence = 0;
 
     // Loop through the route to add markers
     for (var i = 0; i < route.length; i++) {
@@ -607,18 +612,14 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
         // Check if the current point is a prioritized point
         if (prioritizedPoints.includes(index)) {
             prioritizedRouteLatLng.push(latLng);
+            // Add marker with sequence number for prioritized points
+            L.marker(latLng, { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text blue-route-labels">' + prioritizedRouteSequence++ + '</div>'})}).addTo(map);
         } else {
             routeLatLng.push(latLng);
+            // Add marker with sequence number for non-prioritized points
+            L.marker(latLng, { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text">' + routeSequence++ + '</div>'})}).addTo(map);
         }
     }
-
-    // Add text directly to the map for the starting and ending points of the red route
-    L.marker(prioritizedRouteLatLng[0], { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text blue-route-labels">Priority Route Start</div>'})}).addTo(map);
-    L.marker(prioritizedRouteLatLng[prioritizedRouteLatLng.length - 1], { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text blue-route-labels">Priority Route End</div>'})}).addTo(map);
-
-    // Add text directly to the map for the starting and ending points of the blue route
-    L.marker(routeLatLng[0], { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text ">Casual Route End</div>'})}).addTo(map);
-    L.marker(routeLatLng[routeLatLng.length - 1], { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text ">Casual Route Start</div>'})}).addTo(map);
 
     // Add routing controls for the red route
     var prioritizedRouteControl = L.Routing.control({
@@ -642,6 +643,8 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
     reverseRouteAndSetWaypoints(routeControl, routeLatLng);
 }
 
+
+
 // Function to reverse the route and update the Leaflet routing control
 function reverseRouteAndSetWaypoints(routeControl, routeLatLng) {
     // Reverse the order of the routeLatLng array
@@ -650,3 +653,5 @@ function reverseRouteAndSetWaypoints(routeControl, routeLatLng) {
     // Update the Leaflet routing control with the new routeLatLng array
     routeControl.setWaypoints(routeLatLng);
 }
+
+
