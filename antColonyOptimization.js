@@ -618,12 +618,24 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
         // Check if the current point is a prioritized point
         if (prioritizedPoints.includes(index)) {
             prioritizedRouteLatLng.push(latLng);
-            // Add marker with sequence number for prioritized points
-            L.marker(latLng, { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text blue-route-labels">' + prioritizedRouteSequence++ + '</div>'})}).addTo(map);
+            // Add rotated marker with sequence number for prioritized points
+            L.marker(latLng, {
+                icon: L.divIcon({
+                    className: 'custom-div-icon',
+                    html: '<div class="marker-text blue-route-labels">' + prioritizedRouteSequence++ + '</div>'
+                }),
+                rotationAngle: calculateRotationAngle(route, i) // Calculate rotation angle
+            }).addTo(map);
         } else {
             routeLatLng.push(latLng);
-            // Add marker with sequence number for non-prioritized points
-            L.marker(latLng, { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text">' + routeSequence++ + '</div>'})}).addTo(map);
+            // Add rotated marker with sequence number for non-prioritized points
+            L.marker(latLng, {
+                icon: L.divIcon({
+                    className: 'custom-div-icon',
+                    html: '<div class="marker-text">' + routeSequence++ + '</div>'
+                }),
+                rotationAngle: calculateRotationAngle(route, i) // Calculate rotation angle
+            }).addTo(map);
         }
     }
 
@@ -633,7 +645,8 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
         routeWhileDragging: true,
         lineOptions: {
             styles: [{ color: '#F42E17', opacity: 1, weight: 7 }]
-        }
+        },
+        createMarker: function() { return null; }
     }).addTo(map);
 
     // Add routing controls for the blue route
@@ -648,6 +661,21 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
     // Reverse the route and update the map
     reverseRouteAndSetWaypoints(routeControl, routeLatLng);
 }
+
+// Function to calculate rotation angle based on route
+function calculateRotationAngle(route, index) {
+    // Calculate angle based on the difference between consecutive points
+    if (index < route.length - 1) {
+        var currentPoint = route[index];
+        var nextPoint = route[index + 1];
+        var latDiff = nextPoint.lat - currentPoint.lat;
+        var lngDiff = nextPoint.lng - currentPoint.lng;
+        return Math.atan2(lngDiff, latDiff) * (180 / Math.PI);
+    } else {
+        return 0; // Default rotation angle
+    }
+}
+
 
 
 
@@ -716,3 +744,4 @@ function openMapInNewPage() {
     // Open the map URL in a new tab
     window.open(mapURL, '_blank');
 }
+

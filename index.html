@@ -27,17 +27,42 @@
 
 <div class="container">
   <div class="upload-section">
+    <br><br><br><br>
     <h2>Upload CSV file of random routes</h2>
     <input type="file" id="fileInput" accept=".csv" onchange="displayFileName()">
     <label for="fileInput" class="custom-file-upload">Choose file</label>
     <p id="fileNameDisplay" class="file-name">No file chosen</p>
   </div>
+  
+  <div class="instructionContainer">
+  <div id="customInstructions">
+    <br><br>
+    <h3>Before Uploading The File Read The Below Instructions:</h3>
+    <ul>
+      <li style="padding-bottom: 5px;">The First Column Of The Table Must Contain The Latitudes</li>
+      <li style="padding-bottom: 5px;">The Second Column Must Contain The Longitudes</li>
+      <li style="padding-bottom: 5px;">The Third Column Can Contain The Names Of Stops (Optional)</li>
+      <li style="padding-bottom: 5px;">The Forth Column Must Contain The Priority Set Yes/No</li>
+      <li style="padding-bottom: 5px;">Please Do not Add More Than Two Priority Locations</li>
+      <li style="padding-bottom: 5px;">File Format Must Be CSV</li>
+      
+    </ul>
+  </div>
+  
+  <div id="imageContainer" style="margin-top: -10%;">
+    <blockquote class="imgur-embed-pub" lang="en" data-id="hMRuQYn" data-context="false"><a href="//imgur.com/hMRuQYn"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+  </div>
+</div>
+
   <div id="loadingSpinner" class="loading-spinner"></div>
   <button class="optimize-btn" onclick="optimizeRoute()">Optimize Route</button>
+  <button class="share-btn" id="shareButton">Share Route</button>
   <div id="optimizedRoutes" class="hidden"></div>
   <br><br><br>
   <div id="map" style="height: 100vh; "></div>
-  <button class="share-btn" id="shareButton">Share Route</button>
+  <!-- <button id="rotateLeftButton">Rotate Left</button>
+  <button id="rotateRightButton">Rotate Right</button> -->
+
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -45,6 +70,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.js"></script>
 <script src="antColonyOptimization.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-rotatedmarker/0.2.0/leaflet.rotatedMarker.min.js"></script>
+
 <script>
     function displayFileName() {
         const fileInput = document.getElementById('fileInput');
