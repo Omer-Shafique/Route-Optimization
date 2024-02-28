@@ -708,12 +708,6 @@ function constructMapURL() {
     return mapURL;
 }
 
-// Get the map element
-const map = document.getElementById('map');
-
-// Add event listener for click event
-map.addEventListener('click', openMapInNewPage);
-
 // Function to handle opening the map in a new page
 function openMapInNewPage() {
     // Define the URL of the map
