@@ -674,19 +674,17 @@ const shareButton = document.getElementById('shareButton');
 shareButton.addEventListener('click', shareMap);
 
 // Function to handle the share button click event
+// Function to handle the share button click event
 function shareMap() {
-    // Get the URL of the current page
-    const currentURL = window.location.href;
-    
-    // Construct the share message with the URL
-    const shareMessage = `Check out this map: ${currentURL}`;
-    
-    // Use the Web Share API to share the message
+    // Construct the URL for the map with its current state
+    const mapURL = constructMapURL();
+
+    // Use the Web Share API to share the map URL
     if (navigator.share) {
         navigator.share({
             title: 'Share Map',
-            text: shareMessage,
-            url: currentURL,
+            text: 'Check out this map!',
+            url: mapURL,
         })
         .then(() => console.log('Shared successfully'))
         .catch((error) => console.error('Error sharing:', error));
@@ -695,3 +693,18 @@ function shareMap() {
         alert('Sharing is not supported in this browser.');
     }
 }
+
+// Function to construct the URL for the map with its current state
+function constructMapURL() {
+    // Construct the URL based on the map state
+    // For example, you can include coordinates, markers, and routes as query parameters
+    const mapState = {
+        // Add relevant map state parameters here
+    };
+
+    // Construct the map URL with the map state as query parameters
+    const mapURL = 'https://tick-route-optimizater.vercel.app/map?' + new URLSearchParams(mapState).toString();
+
+    return mapURL;
+}
+
