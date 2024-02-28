@@ -147,6 +147,11 @@ async function optimizeRoute() {
         alert("Please select a file. File must be CSV");
         return;
     }
+
+    // Display the filename
+    var fileNameDisplay = document.getElementById('fileNameDisplay');
+    fileNameDisplay.textContent = "File selected: " + file.name;
+
     var reader = new FileReader();
 
     reader.onload = function (event) {
@@ -169,6 +174,7 @@ async function optimizeRoute() {
 
     reader.readAsText(file);
 }
+
 
 async function getLocationName(latitude, longitude) {
     try {
@@ -483,38 +489,38 @@ function calculateProbabilities(pheromoneMatrix, coordinates, visited, currentCi
 }
 
 function displayOptimizedRoute(route, coordinates) {
-    let optimizedRoutesHTML = "<h2>Optimized Route</h2><table id='optimizedRouteTable'><tr><th>Index</th><th>Latitude</th><th>Longitude</th><th>Location Name</th></tr>";
+    // let optimizedRoutesHTML = "<h2>Optimized Route</h2><table id='optimizedRouteTable'><tr><th>Index</th><th>Latitude</th><th>Longitude</th><th>Location Name</th></tr>";
 
-    // Find the starting point index
-    const startingPointIndex = route[0];
+    // // Find the starting point index
+    // const startingPointIndex = route[0];
 
-    // Sort the route array based on priority, excluding the starting point
-    const sortedRoute = route.slice(1).sort((a, b) => {
-        const coordA = coordinates[a];
-        const coordB = coordinates[b];
+    // // Sort the route array based on priority, excluding the starting point
+    // const sortedRoute = route.slice(1).sort((a, b) => {
+    //     const coordA = coordinates[a];
+    //     const coordB = coordinates[b];
 
-        if (coordA.prioritized && !coordB.prioritized) {
-            return -1;
-        } else if (!coordA.prioritized && coordB.prioritized) {
-            return 1;
-        } else {
-            return 0;
-        }
-    });
+    //     if (coordA.prioritized && !coordB.prioritized) {
+    //         return -1;
+    //     } else if (!coordA.prioritized && coordB.prioritized) {
+    //         return 1;
+    //     } else {
+    //         return 0;
+    //     }
+    // });
 
-    // Add the starting point at the beginning of the sorted array
-    sortedRoute.unshift(startingPointIndex);
+    // // Add the starting point at the beginning of the sorted array
+    // sortedRoute.unshift(startingPointIndex);
 
-    for (let j = 0; j < sortedRoute.length; j++) {
-        const index = sortedRoute[j];
-        optimizedRoutesHTML += `<tr><td>${j + 1}</td><td>${coordinates[index].lat}</td><td>${coordinates[index].lng}</td><td>${coordinates[index].name}</td></tr>`;
-    }
+    // for (let j = 0; j < sortedRoute.length; j++) {
+    //     const index = sortedRoute[j];
+    //     optimizedRoutesHTML += `<tr><td>${j + 1}</td><td>${coordinates[index].lat}</td><td>${coordinates[index].lng}</td><td>${coordinates[index].name}</td></tr>`;
+    // }
     
-    optimizedRoutesHTML += "</table>";
+    // optimizedRoutesHTML += "</table>";
 
-    const optimizedRoutesDiv = document.getElementById('optimizedRoutes');
-    optimizedRoutesDiv.innerHTML = optimizedRoutesHTML;
-    optimizedRoutesDiv.classList.remove('hidden');
+    // const optimizedRoutesDiv = document.getElementById('optimizedRoutes');
+    // optimizedRoutesDiv.innerHTML = optimizedRoutesHTML;
+    // optimizedRoutesDiv.classList.remove('hidden');
 }
 
 // function addMarkersToMap(coordinates, route, prioritizedPoints) {

@@ -1,47 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Route Optimizer</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Optimizer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container">
+    <div class="logo">
+      <h1>Tick Route Optimizer</h1>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="container">
   <div class="upload-section">
     <h2>Upload CSV file of random routes</h2>
-    <input type="file" id="fileInput" accept=".csv">
+    <input type="file" id="fileInput" accept=".csv" onchange="displayFileName()">
     <label for="fileInput" class="custom-file-upload">Choose file</label>
-    <!-- <p class="file-name">No file chosen</p> -->
+    <p id="fileNameDisplay" class="file-name">No file chosen</p>
   </div>
-  <!-- <div class="starting-point-section"> -->
-    <!-- <h2>Select Starting Point</h2> -->
-    <!-- <select id="startingPointSelect"> -->
-      <!-- Options will be dynamically populated using JavaScript -->
-    <!-- </select> -->
-  <!-- </div> -->
   <div id="loadingSpinner" class="loading-spinner"></div>
   <button class="optimize-btn" onclick="optimizeRoute()">Optimize Route</button>
   <div id="optimizedRoutes" class="hidden"></div>
   <br><br><br>
-  <div id="map" style="height: 130vh; width:100vw;"></div>
-
-
-
-
+  <div id="map" style="height: 100vh; "></div>
 </div>
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.js"></script>
-
-
-<!-- <script src="greedymethod.js"></script> -->
-<!-- <script src="geneticMethod.js"></script> -->
 <script src="antColonyOptimization.js"></script>
+<script>
+    function displayFileName() {
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        fileNameDisplay.textContent = fileInput.files[0].name;
+    }
+</script>
 
 </body>
 </html>
-
