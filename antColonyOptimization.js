@@ -667,5 +667,31 @@ function reverseRouteAndSetWaypoints(routeControl, routeLatLng) {
         L.marker(latLng, { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text">' + routeSequence++ + '</div>'})}).addTo(routeControl._map);
     }
 }
+// Get the share button element
+const shareButton = document.getElementById('shareButton');
 
+// Add event listener for click event
+shareButton.addEventListener('click', shareMap);
 
+// Function to handle the share button click event
+function shareMap() {
+    // Get the URL of the current page
+    const currentURL = window.location.href;
+    
+    // Construct the share message with the URL
+    const shareMessage = `Check out this map: ${currentURL}`;
+    
+    // Use the Web Share API to share the message
+    if (navigator.share) {
+        navigator.share({
+            title: 'Share Map',
+            text: shareMessage,
+            url: currentURL,
+        })
+        .then(() => console.log('Shared successfully'))
+        .catch((error) => console.error('Error sharing:', error));
+    } else {
+        // Fallback for browsers that do not support Web Share API
+        alert('Sharing is not supported in this browser.');
+    }
+}

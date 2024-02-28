@@ -162,7 +162,7 @@ th {
 
 #map {
   border: 5px solid rgb(0, 0, 0);
-  margin-bottom: 100vh;
+  /* margin-bottom: 100vh; */
 
 }
 
@@ -250,3 +250,24 @@ th {
   margin-right: 60%;
   color: rgba(255, 230, 4, 0.705);
 } */
+
+
+/* CSS for the share button */
+.share-btn {
+  background-color: #4CAF50; /* Green background */
+  border: none; /* No border */
+  color: white; /* White text */
+  padding: 10px 20px; /* Padding */
+  text-align: center; /* Center text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Display as inline block */
+  font-size: 16px; /* Font size */
+  margin: 4% 8% ; /* Margin */
+  cursor: pointer; /* Cursor pointer on hover */
+  border-radius: 4px; /* Rounded corners */
+}
+
+/* Style the share button on hover */
+.share-btn:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
