@@ -35,24 +35,31 @@
   </div>
   
   <div class="instructionContainer">
-  <div id="customInstructions">
-    <br><br>
-    <h3>Before Uploading The File Read The Below Instructions:</h3>
-    <ul>
-      <li style="padding-bottom: 5px;">The First Column Of The Table Must Contain The Latitudes</li>
-      <li style="padding-bottom: 5px;">The Second Column Must Contain The Longitudes</li>
-      <li style="padding-bottom: 5px;">The Third Column Can Contain The Names Of Stops (Optional)</li>
-      <li style="padding-bottom: 5px;">The Forth Column Must Contain The Priority Set Yes/No</li>
-      <li style="padding-bottom: 5px;">Please Do not Add More Than Two Priority Locations</li>
-      <li style="padding-bottom: 5px;">File Format Must Be CSV</li>
-      
-    </ul>
+    <div id="customInstructions">
+      <br><br>
+      <h3 style="color: rgb(255, 0, 0);">Before Uploading The File Read The Below Instructions:</h3>
+      <ul>
+        <li style="padding-bottom: 5px;">The First Column Of The Table Must Contain The Latitudes</li>
+        <li style="padding-bottom: 5px;">The Departure Location Should Be On The First Row Of The Table</li>
+        <li style="padding-bottom: 5px;">Departure Location's Priority Will Always Be "Yes"</li>
+        <li style="padding-bottom: 5px;">The Second Column Must Contain The Longitudes</li>
+        <li style="padding-bottom: 5px;">The Third Column Can Contain The Names Of Stops (Optional)</li>
+        <li style="padding-bottom: 5px;">The Forth Column Must Contain The Priority Set Yes/No</li>
+        <li style="padding-bottom: 5px;">Please Do not Add More Than Two Priority Locations</li>
+        <li style="padding-bottom: 5px;">File Format Must Be CSV</li>
+      </ul>
+    </div>
+    
+    <div id="imageContainer" style="margin-top: -10%;">
+      <blockquote class="imgur-embed-pub" lang="en" data-id="hMRuQYn" data-context="false"><a href="//imgur.com/hMRuQYn"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+      <div id="downloadSample">
+        <button class="CSVdownloadButton" onclick="downloadSampleCSV()">Download Sample CSV</button>
+      </div>
+    </div>
+    
+    <!-- Button for downloading sample CSV file -->
   </div>
   
-  <div id="imageContainer" style="margin-top: -10%;">
-    <blockquote class="imgur-embed-pub" lang="en" data-id="hMRuQYn" data-context="false"><a href="//imgur.com/hMRuQYn"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
-  </div>
-</div>
 
   <div id="loadingSpinner" class="loading-spinner"></div>
   <button class="optimize-btn" onclick="optimizeRoute()">Optimize Route</button>

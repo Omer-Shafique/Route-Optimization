@@ -308,3 +308,20 @@ th {
   max-width: 100%;
   height: auto;
 }
+
+#downloadSample {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.CSVdownloadButton{
+  background-color: #00bcf5;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+
+}

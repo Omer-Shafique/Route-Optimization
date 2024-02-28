@@ -745,3 +745,19 @@ function openMapInNewPage() {
     window.open(mapURL, '_blank');
 }
 
+function downloadSampleCSV() {
+    // Create a link element
+    var link = document.createElement("a");
+    // Set the href attribute to the URL of the sample CSV file
+    link.href = "https://drive.google.com/file/d/1SyTP6dNPoYdxoU4TkZloTBmFfJ30K9Oo/view";
+    // Set the download attribute to specify the filename for the downloaded file
+    link.download = "sample_file.csv";
+    // Set the target attribute to open the link in a new tab
+    link.target = "_blank";
+    // Append the link element to the document body
+    document.body.appendChild(link);
+    // Trigger a click event on the link element
+    link.click();
+    // Remove the link element from the document body
+    document.body.removeChild(link);
+}
