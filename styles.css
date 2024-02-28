@@ -7,74 +7,63 @@ body {
 }
 
 .container {
-  /* width: 90%;
-  margin: 5% 5% auto; */
-  /* padding-right:10%; */
-  padding-left:10px;
-
+  padding-left: 10px;
+  width: 90%;
+  margin: 0 auto;
 }
 
-/* Navbar styling */
 .navbar {
-  background-color: #333; /* Background color */
-  color: #fff; /* Text color */
-  padding: 2.5% 15px 4.5% 15px; /* Padding top and bottom */
-}
-
-.container {
-  width: 90%; /* Set the width of the container */
-  margin: 0 auto; /* Center the container */
+  background-color: #333;
+  color: #fff;
+  padding: 2.5% 15px 4.5% 15px;
 }
 
 .logo {
-  float: left; /* Float the logo to the left */
+  float: left;
 }
 
 .logo h1 {
-  margin: 0; /* Remove margin for the logo */
+  margin: 0;
 }
 
 .nav-links {
-  float: right; /* Float the navigation links to the right */
-  list-style: none; /* Remove default list styles */
-  margin: 0; /* Remove margin for the navigation links */
-  padding: 0; /* Remove padding for the navigation links */
+  float: right;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links li {
-  display: inline-block; /* Display navigation links inline */
-  margin-left: 20px; /* Add margin between navigation links */
+  display: inline-block;
+  margin-left: 20px;
 }
 
 .nav-links li:first-child {
-  margin-left: 0; /* Remove margin for the first navigation link */
+  margin-left: 0;
 }
 
 .nav-links li a {
-  color: #fff; /* Text color for navigation links */
-  text-decoration: none; /* Remove underline from navigation links */
-  font-size: 16px; /* Font size for navigation links */
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
 }
 
 .nav-links li a:hover {
-  text-decoration: underline; /* Add underline on hover */
+  text-decoration: underline;
 }
-
 
 .upload-section,
 .starting-point-section {
   margin-bottom: 20px;
 }
 
-h2{
+h2 {
   margin-top: 5%;
 }
-
 
 .upload-section h2,
 .starting-point-section h2 {
   margin-bottom: 10px;
-  /* margin-left: 10%; */
 }
 
 .custom-file-upload {
@@ -85,23 +74,18 @@ h2{
   color: white;
   border-radius: 5px;
   transition: background-color 0.3s ease;
-  /* margin-left: 10%; */
 }
 
 .custom-file-upload:hover {
   background-color: #45a049;
-  
-   
 }
 
 #fileInput {
   display: none;
-
 }
 
 .file-name {
   margin-top: 10px;
-  /* margin-left: 10%; */
 }
 
 .optimize-btn {
@@ -113,7 +97,6 @@ h2{
   border: none;
   border-radius: 5px;
   transition: background-color 0.3s ease;
-  /* margin-left: 10%; */
 }
 
 .optimize-btn:hover {
@@ -162,8 +145,6 @@ th {
 
 #map {
   border: 5px solid rgb(0, 0, 0);
-  /* margin-bottom: 100vh; */
-
 }
 
 .custom-marker {
@@ -171,44 +152,36 @@ th {
   border-radius: 50%;
   color: rgb(0, 0, 0);
   text-align: center;
-  line-height: 30px; /* Should match the marker icon size */
+  line-height: 30px;
 }
 
-#map .leaflet-routing-container { 
+#map .leaflet-routing-container {
   display: none;
   background-color: black;
   color: white;
-  padding-left:3px;
-
+  padding-left: 3px;
 }
 
 .starting-marker {
   width: 25px;
   height: 25px;
-  background-color: #ffffff; /* White background */
-  border: 2px solid #000000; /* Black border */
-  border-radius: 50%; /* Circular shape */
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 50%;
 }
-
-/* .custom-marker-icon {
-  background-color: #ffffff; 
-  border: 2px solid #000000; 
-  border-radius: 50%; 
-  text-align: center;
-} */
 
 .marker-order {
   display: block;
-  font-size: 14px; /* Font size of the marker order */
+  font-size: 14px;
   font-weight: bold;
-  color: #000000; /* Marker order text color */
-  line-height: 30px; /* Vertical alignment of the order number */
+  color: #000000;
+  line-height: 30px;
 }
 
 .custom-marker-icon {
-  border: 2px solid black; 
+  border: 2px solid black;
   background-color: #fff;
-  padding-left: 100px !important; 
+  padding-left: 100px !important;
   color: #000000;
 }
 
@@ -221,53 +194,22 @@ th {
   font-weight: bolder;
   white-space: nowrap;
   background-color: rgb(0, 140, 255);
-  /* padding-right: 20px; */
-  /* padding-left: 15px; */
   border-radius: 10px;
-  padding: 5px 15px 5px 5px ;
+  padding: 5px 15px 5px 5px;
   text-align: center;
-  border:2px solid rgb(0, 59, 136);
-
-
+  border: 2px solid rgb(0, 59, 136);
 }
 
-
-.blue-route-labels{
-  color:#000000;
+.blue-route-labels {
+  color: #000000;
   background-color: rgb(223, 0, 0);
-  border:2px solid rgb(99, 0, 0);
-  /* padding-right: 20px; */
-  /* padding-left: 10px; */
+  border: 2px solid rgb(99, 0, 0);
 }
 
-.main-heading{
-  text-align: center; 
-}
-
-/* .tagline{
+.main-heading {
   text-align: center;
-  margin-top: -2%;
-  margin-right: 60%;
-  color: rgba(255, 230, 4, 0.705);
-} */
-
-
-/* CSS for the share button */
-.share-btn {
-  background-color: #4CAF50; /* Green background */
-  border: none; /* No border */
-  color: white; /* White text */
-  padding: 10px 20px; /* Padding */
-  text-align: center; /* Center text */
-  text-decoration: none; /* No underline */
-  display: inline-block; /* Display as inline block */
-  font-size: 16px; /* Font size */
-  margin: 4% 8% ; /* Margin */
-  cursor: pointer; /* Cursor pointer on hover */
-  border-radius: 4px; /* Rounded corners */
 }
 
-/* Style the share button on hover */
 .share-btn {
   cursor: pointer;
   padding: 15px 40px;
@@ -277,14 +219,11 @@ th {
   border-radius: 5px;
   transition: background-color 0.3s ease;
   margin-left: -0%;
-  background-color: #45a049; 
-  
+  background-color: #45a049;
 }
 
 .share-btn:hover {
-
-  background-color: #004203; 
-  
+  background-color: #004203;
 }
 
 .instructionContainer {
@@ -315,7 +254,7 @@ th {
   justify-content: center;
 }
 
-.CSVdownloadButton{
+.CSVdownloadButton {
   background-color: #00bcf5;
   color: #fff;
   border: none;
@@ -323,12 +262,22 @@ th {
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
-
 }
 
-/* Hide image container in mobile view */
 @media only screen and (max-width: 700px) {
   #imageContainer {
-      display: none;
+    display: none;
   }
+}
+
+#deleteRouteBtn{
+  cursor: pointer;
+  padding: 15px 40px;
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  margin-left: -0%;
+  background-color: #af0000b4;
 }

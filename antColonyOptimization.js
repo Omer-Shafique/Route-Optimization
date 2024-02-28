@@ -1,49 +1,46 @@
 class PriorityQueue {
     constructor() {
-        this.queue = [];
-    }
+        this.queue = []; // Initialize an empty array to store items
+    } 
 
+    
     enqueue(item) {
-        this.queue.push(item);
-        this.queue.sort((a, b) => a.priority - b.priority); // Sort by priority
-    }
+        this.queue.push(item); // Add the item to the queue
+        this.queue.sort((a, b) => a.priority - b.priority); // Sort the queue based on priority
+    } 
 
+    
     dequeue() {
         if (this.isEmpty()) {
-            return null;
+            return null; // If the queue is empty, return null
         }
-        return this.queue.shift();
-    }
-
+        return this.queue.shift(); // Remove and return the first item in the queue (highest priority)
+    } 
+    // Method to check if the queue is empty
     isEmpty() {
-        return this.queue.length === 0;
-    }
+        return this.queue.length === 0; // Return true if the queue is empty, false otherwise
+    } 
 }
 
-
 function optimizePointOrder(points, distanceMatrix, startingPoint) {
-    // Sort points based on their priority and distance from the starting point
+    
     points.sort((a, b) => {
-        // Prioritize the starting point to always be first
+
         if (a === startingPoint) return -1;
         if (b === startingPoint) return 1;
         
-        // Prioritize prioritized points over non-prioritized points
+
         const isAPrioritized = points[a].priority;
         const isBPrioritized = points[b].priority;
         if (isAPrioritized && !isBPrioritized) return -1;
         if (!isAPrioritized && isBPrioritized) return 1;
         
-        // If both points are prioritized or both are not, sort by index
+
         return a - b;
     });
 
     return points;
 }
-
-
-
-
 
 window.onload = function() {
     const storedCSVData = localStorage.getItem('csvData');
@@ -78,14 +75,12 @@ function getPrioritizedPoints(coordinates) {
     return prioritizedPoints;
 }
 
-
 async function parseCSV(csvData) {
     try {
         var lines = csvData.split('\n');
         var coordinates = [];
         var prioritizedPoints = [];
 
-        // Process each line of the CSV
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i].trim();
 
@@ -97,17 +92,17 @@ async function parseCSV(csvData) {
                     continue;
                 }
 
-                var latitude = parseFloat(parts[0]); // Latitude from column 1
-                var longitude = parseFloat(parts[1]); // Longitude from column 2
-                var locationName = parts[2]; // Location name from column 3
-                var isPriority = parts.length >= 4 && parts[3].toLowerCase() === 'yes'; // Priority from column 4
+                var latitude = parseFloat(parts[0]); 
+                var longitude = parseFloat(parts[1]);
+                var locationName = parts[2];
+                var isPriority = parts.length >= 4 && parts[3].toLowerCase() === 'yes'; 
 
                 if (isNaN(latitude) || isNaN(longitude)) {
                     console.error("Invalid latitude or longitude:", line);
                     continue;
                 }
 
-                // Mark the first row as the starting point
+
                 var priority = i === 0 ? true : isPriority;
 
                 coordinates.push({ lat: latitude, lng: longitude, name: locationName, priority: priority, rowIndex: i });
@@ -123,17 +118,12 @@ async function parseCSV(csvData) {
             return;
         }
 
-        // Once coordinates are extracted, continue with route optimization
         calculateAndOptimizeRoute(coordinates, prioritizedPoints);
     } catch (error) {
         console.error('Error parsing CSV:', error);
         alert('Error parsing CSV. Please contact the developer');
     }
 }
-
-    
-
-
 
 function showLoadingSpinner() {
     const loadingSpinner = document.getElementById('loadingSpinner');
@@ -174,7 +164,6 @@ async function optimizeRoute() {
 
     reader.readAsText(file);
 }
-
 
 async function getLocationName(latitude, longitude) {
     try {
@@ -241,7 +230,6 @@ async function optimizeRouteWithACO(coordinates, distanceMatrix, prioritizedRout
     addMarkersToMap(coordinates, optimizedRouteEndingOnStartingPoint, prioritizedRoute);
 }
 
-
 function constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, startCityIndex, prioritizedPoints) {
     const numCities = coordinates.length;
     const visited = new Array(numCities).fill(false);
@@ -271,10 +259,6 @@ function constructAntRoute(pheromoneMatrix, coordinates, alpha, beta, startCityI
 
     return route;
 }
-
-
-
-
 async function optimizeRouteWithPriorities(coordinates) {
     // Calculate distance matrix
     const distanceMatrix = calculateDistanceMatrix(coordinates);
@@ -300,9 +284,6 @@ async function optimizeRouteWithPriorities(coordinates) {
     // Optimize route using ACO with the initial route starting from the last priority location
     optimizeRouteWithACO(coordinates, distanceMatrix, initialPrioritizedRoute, lastPriorityIndex);
 }
-
-
-
 
 async function calculateAndOptimizeRoute(coordinates) {
     var distanceMatrix = calculateDistanceMatrix(coordinates);
@@ -467,8 +448,6 @@ function calculateProbabilities(pheromoneMatrix, coordinates, visited, currentCi
     return probabilities;
 }
 
-
-
   function selectNextCity(probabilities) {
     try {
         const randomNumber = Math.random();
@@ -522,78 +501,6 @@ function displayOptimizedRoute(route, coordinates) {
     // optimizedRoutesDiv.innerHTML = optimizedRoutesHTML;
     // optimizedRoutesDiv.classList.remove('hidden');
 }
-
-// function addMarkersToMap(coordinates, route, prioritizedPoints) {
-//     var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10);
-
-//     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//     }).addTo(map);
-
-//     var prioritizedMarkers = [];
-//     var routeMarkers = [];
-//     var routeLatLng = [];
-//     var prioritizedRouteLatLng = [];
-//     var markerCount = 1;
-
-//     for (var i = 0; i < route.length; i++) {
-//         var index = route[i];
-//         var latLng = L.latLng(coordinates[index].lat, coordinates[index].lng);
-
-//         // Check if the current point is a prioritized point
-//         if (prioritizedPoints.includes(index)) {
-//             var markerIcon = L.divIcon({
-//                 className: 'custom-marker-icon',
-//                 html: markerCount.toString(),
-//                 iconSize: [25, 25],
-//                 iconAnchor: [-2, 12],
-//                 iconUrl: 'red_marker.png'
-//             });
-//             var marker = L.marker(latLng, { icon: markerIcon });
-//             prioritizedMarkers.push(marker);
-//             prioritizedRouteLatLng.push(latLng);
-//         } else {
-//             var markerIcon = L.divIcon({
-//                 className: 'custom-marker-icon',
-//                 html: markerCount.toString(),
-//                 iconSize: [25, 25],
-//                 iconAnchor: [-2, 12],
-//                 iconUrl: 'blue_marker.png'
-//             });
-//             var marker = L.marker(latLng, { icon: markerIcon });
-//             routeMarkers.push(marker); // Store non-prioritized points for blue route
-//             routeLatLng.push(latLng);
-//         }
-
-//         markerCount++;
-//     }
-
-//     // Add all markers to the map
-//     for (var i = 0; i < prioritizedMarkers.length; i++) {
-//         prioritizedMarkers[i].addTo(map);
-//     }
-
-//     for (var i = 0; i < routeMarkers.length; i++) {
-//         routeMarkers[i].addTo(map);
-//     }
-
-//     // Add routing controls for both types of points
-//     var prioritizedRouteControl = L.Routing.control({
-//         waypoints: prioritizedRouteLatLng,
-//         routeWhileDragging: true,
-//         lineOptions: {
-//             styles: [{ color: '#F42E17', opacity: 1, weight: 5 }]
-//         }
-//     }).addTo(map);
-
-//     var routeControl = L.Routing.control({
-//         waypoints: routeLatLng,
-//         routeWhileDragging: true,
-//         lineOptions: {
-//             styles: [{ color: '#008ee6', opacity: 1, weight: 5 }]
-//         }
-//     }).addTo(map);
-// }
 
 function addMarkersToMap(coordinates, route, prioritizedPoints) {
     var map = L.map('map').setView([coordinates[0].lat, coordinates[0].lng], 10);
@@ -662,7 +569,6 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
     reverseRouteAndSetWaypoints(routeControl, routeLatLng);
 }
 
-// Function to calculate rotation angle based on route
 function calculateRotationAngle(route, index) {
     // Calculate angle based on the difference between consecutive points
     if (index < route.length - 1) {
@@ -676,12 +582,7 @@ function calculateRotationAngle(route, index) {
     }
 }
 
-
-
-
-// Function to reverse the route and update the Leaflet routing control
-var routeSequence = 1; // Initialize route sequence outside the function
-
+var routeSequence = 1; 
 function reverseRouteAndSetWaypoints(routeControl, routeLatLng) {
     // Reverse the order of the routeLatLng array
     routeLatLng.reverse();
@@ -695,14 +596,10 @@ function reverseRouteAndSetWaypoints(routeControl, routeLatLng) {
         L.marker(latLng, { icon: L.divIcon({className: 'custom-div-icon', html: '<div class="marker-text">' + routeSequence++ + '</div>'})}).addTo(routeControl._map);
     }
 }
-// Get the share button element
-const shareButton = document.getElementById('shareButton');
 
-// Add event listener for click event
+const shareButton = document.getElementById('shareButton');
 shareButton.addEventListener('click', shareMap);
 
-// Function to handle the share button click event
-// Function to handle the share button click event
 function shareMap() {
     // Construct the URL for the map with its current state
     const mapURL = constructMapURL();
@@ -722,7 +619,6 @@ function shareMap() {
     }
 }
 
-// Function to construct the URL for the map with its current state
 function constructMapURL() {
     // Construct the URL based on the map state
     // For example, you can include coordinates, markers, and routes as query parameters
@@ -736,7 +632,6 @@ function constructMapURL() {
     return mapURL;
 }
 
-// Function to handle opening the map in a new page
 function openMapInNewPage() {
     // Define the URL of the map
     const mapURL = 'https://tick-route-optimizater.vercel.app/map';
@@ -760,4 +655,13 @@ function downloadSampleCSV() {
     link.click();
     // Remove the link element from the document body
     document.body.removeChild(link);
+}
+
+function deleteRoute() {
+    // Remove the CSV data from local storage
+    localStorage.removeItem('csvData');
+    
+    // Optionally, you can also clear any displayed route information on the page
+    document.getElementById('optimizedRoutes').innerHTML = '';
+    window.location.reload();
 }
