@@ -539,9 +539,9 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
             L.marker(latLng, {
                 icon: L.divIcon({
                     className: 'custom-div-icon',
-                    html: '<div class="marker-text">' + routeSequence++ + '</div>'
+                    html: '<div class="marker-text ">' + routeSequence++ + '</div>'
                 }),
-                rotationAngle: calculateRotationAngle(route, i) // Calculate rotation angle
+                rotationAngle: calculateRotationAngle(route, i)     
             }).addTo(map);
         }
     }
@@ -562,7 +562,8 @@ function addMarkersToMap(coordinates, route, prioritizedPoints) {
         routeWhileDragging: true,
         lineOptions: {
             styles: [{ color: '#008ee6', opacity: 1, weight: 5 }]
-        }
+        },
+        createMarker: function() { return null; } 
     }).addTo(map);
 
     // Reverse the route and update the map
